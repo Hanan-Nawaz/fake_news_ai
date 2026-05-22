@@ -1,21 +1,5 @@
 import pandas as pd
-
-def load_file(file_path: str) -> pd.DataFrame:
-    """Load csv file and convert it to DataFrame
-
-    Parameters
-    ----------
-    file_path : str
-        File path for the raw file
-
-    Returns
-    -------
-    pd.DataFrame
-        DataFrame that is created
-    """
-
-    df = pd.read_csv(file_path, index_col = 0)
-    return df
+from src.data.load_data import load_file
 
 def clean_df(df: pd.DataFrame) -> pd.DataFrame:
     """Clean the DataFrame by dropping duplicates and null values
@@ -111,14 +95,14 @@ def preprocess_pipeline(df: pd.DataFrame) -> pd.DataFrame:
         Preprocessed DataFrame
     """
     
-    cols_to_drop = ["text", "Label", "date"]
+    cols_to_drop = ["text", "Label", "date", "subject", "char_count", "word_count", "avg_word_length"]
     
     cols_to_rename = {
         "label_number": "label",
         "clean_text": "text"
     }
     
-    text_cols = ["text", "title", "subject"]
+    text_cols = ["text", "title"]
     
     df = clean_df(df)
     df = drop_columns(df, cols_to_drop)
@@ -147,6 +131,8 @@ def main():
     df = preprocess_pipeline(df)
     save_file(df, file_path=processed_file_path)
     print(df.head())
+    
+    return df
 
 if __name__ == "__main__":
     main()

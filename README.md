@@ -215,7 +215,7 @@ The following evaluation metrics are used:
 ## Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Hanan-Nawaz/fake_news_ai
 cd fake-news-ai
 ```
 

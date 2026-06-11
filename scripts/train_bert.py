@@ -104,7 +104,15 @@ def main():
 
     print("Training BERT...")
     import sys; sys.stdout.flush()   
-    trainer.train()
+
+    import traceback
+    print("Training BERT...")
+    try:
+        trainer.train()
+    except Exception as e:
+        print("TRAINER CRASHED:")
+        traceback.print_exc()
+    
     print("Training finished.")
 
     print("Evaluating BERT...")

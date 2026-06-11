@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-
 from src.data.load_data import load_file
 from src.data.preprocess_data import preprocess_pipeline
 from src.data.split_data import split_data
@@ -9,12 +8,12 @@ from src.models.classical_models import get_classical_models
 from src.evaluation.evaluate import evaluate_model
 
 def main():
-    raw_file_path = "data/raw/news_full.csv"
+    raw_file_path = "data/processed/news_balanced.csv"
     results_path = "results/classical_model_results.csv"
 
     os.makedirs("results", exist_ok=True)
 
-    df = load_file(raw_file_path)
+    df = load_file(raw_file_path, "cp1252")
     df = preprocess_pipeline(df)
 
     X_train, X_test, y_train, y_test = split_data(df)
@@ -39,7 +38,7 @@ def main():
         results.append(metrics)
 
     results_df = pd.DataFrame(results)
-    results_df = results_df.sort_values(by="f1_score", ascending=False)
+    results_df = results_df.sort_values(by="f1", ascending=False)
 
     print("\nModel comparison:")
     print(results_df)

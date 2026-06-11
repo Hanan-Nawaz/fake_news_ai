@@ -1,7 +1,0 @@
-# Ignore raw and processed data directories containing large files that are not needed in the repository
-data/raw/
-data/processed/
-*.csv
-
-__pycache__/
-.venv/

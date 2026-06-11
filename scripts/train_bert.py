@@ -58,13 +58,6 @@ def main():
 
     X_train, X_test, y_train, y_test = split_data(df)
 
-
-    print("Train dataset size:", len(train_dataset))
-    print("Train features:", train_dataset.features)
-    print("Train columns:", train_dataset.column_names)
-    print("Sample 0:", train_dataset[0])
-    
-
     tokenizer = get_bert_tokenizer("bert-base-uncased")
 
     train_dataset, test_dataset = create_bert_datasets(
@@ -75,6 +68,11 @@ def main():
         tokenizer=tokenizer,
         max_length=128
     )
+    
+    print("Train dataset size:", len(train_dataset))
+    print("Train features:", train_dataset.features)
+    print("Train columns:", train_dataset.column_names)
+    print("Sample 0:", train_dataset[0])
 
     model = get_bert_model(
         model_name="bert-base-uncased",

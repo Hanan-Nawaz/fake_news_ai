@@ -10,24 +10,27 @@ def get_bert_tokenizer(model_name="bert-base-uncased"):
 
 class NewsDataset(TorchDataset):
     def __init__(self, texts, labels, tokenizer, max_length=128):
-        self.encodings = tokenizer(
-            list(texts),
-            padding="max_length",
-            truncation=True,
-            max_length=max_length,
-            return_tensors="pt"   # ✅ returns proper fixed-size pytorch tensors directly
-        )
-        self.labels = torch.tensor(list(labels), dtype=torch.long)
+        self.texts     = list(texts)
+        self.labels    = list(labels)
+        self.tokenizer = tokenizer
+        self.max_length = max_length
 
     def __len__(self):
         return len(self.labels)
 
     def __getitem__(self, idx):
+        enc = self.tokenizer(
+            self.texts[idx],
+            padding="max_length",
+            truncation=True,
+            max_length=self.max_length,
+            return_tensors="pt"
+        )
         return {
-            "input_ids":      self.encodings["input_ids"][idx],
-            "attention_mask": self.encodings["attention_mask"][idx],
-            "token_type_ids": self.encodings["token_type_ids"][idx],
-            "labels":         self.labels[idx]   # ✅ Trainer expects "labels" not "label"
+            "input_ids":      enc["input_ids"].squeeze(0),
+            "attention_mask": enc["attention_mask"].squeeze(0),
+            "token_type_ids": enc["token_type_ids"].squeeze(0),
+            "labels":         torch.tensor(self.labels[idx], dtype=torch.long)
         }
 
 
@@ -35,9 +38,12 @@ def create_bert_datasets(X_train, X_test, y_train, y_test, tokenizer, max_length
     train_df = pd.DataFrame({"text": X_train, "label": y_train}).dropna()
     test_df  = pd.DataFrame({"text": X_test,  "label": y_test}).dropna()
 
-    print("Tokenizing train..."); 
-    train_dataset = NewsDataset(train_df["text"], train_df["label"], tokenizer, max_length)
-    print("Tokenizing test...")
-    test_dataset  = NewsDataset(test_df["text"],  test_df["label"],  tokenizer, max_length)
+    train_dataset = NewsDataset(train_df["text"].tolist(), train_df["label"].tolist(), tokenizer, max_length)
+    test_dataset  = NewsDataset(test_df["text"].tolist(),  test_df["label"].tolist(),  tokenizer, max_length)
+
+    sample = train_dataset[0]
+    print("Sample keys:", sample.keys())
+    print("input_ids shape:", sample["input_ids"].shape)
+    print("label:", sample["labels"])
 
     return train_dataset, test_dataset

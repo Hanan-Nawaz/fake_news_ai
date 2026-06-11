@@ -76,22 +76,19 @@ def main():
 
     training_args = TrainingArguments(
         output_dir=model_output_path,
-        eval_strategy="epoch",
-        save_strategy="epoch",
+        eval_strategy="no",          
+        save_strategy="no",          
         learning_rate=2e-5,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=32,
         num_train_epochs=2,
         weight_decay=0.01,
-        logging_steps=50,
+        logging_steps=10,           
         logging_strategy="steps",
         report_to="none",
         fp16=torch.cuda.is_available(),
-        save_total_limit=1,
-        dataloader_pin_memory=True,
+        dataloader_num_workers=0,  
         disable_tqdm=False,
-        dataloader_num_workers=0,   
-        load_best_model_at_end=True, 
     )
 
     trainer = Trainer(

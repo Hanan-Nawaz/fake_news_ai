@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+import torch
 
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from transformers import TrainingArguments, Trainer
@@ -50,6 +51,10 @@ def main():
     print(df["label"].value_counts())
     print("Unique labels:", sorted(df["label"].unique()))
 
+    print("CUDA available:", torch.cuda.is_available())
+    if torch.cuda.is_available():
+        print("GPU:", torch.cuda.get_device_name(0))
+
     X_train, X_test, y_train, y_test = split_data(df)
 
     tokenizer = get_bert_tokenizer("bert-base-uncased")
@@ -60,7 +65,7 @@ def main():
         y_train=y_train,
         y_test=y_test,
         tokenizer=tokenizer,
-        max_length=512
+        max_length=128
     )
 
     model = get_bert_model(
@@ -77,11 +82,13 @@ def main():
         per_device_eval_batch_size=32,
         num_train_epochs=2,
         weight_decay=0.01,
-        logging_steps=100,
+        logging_steps=50,
+        logging_strategy="steps",
         report_to="none",
-        fp16=True,
+        fp16=torch.cuda.is_available(),
         save_total_limit=1,
-        dataloader_pin_memory=True
+        dataloader_pin_memory=True,
+        disable_tqdm=False
     )
 
     trainer = Trainer(
@@ -94,6 +101,7 @@ def main():
 
     print("Training BERT...")
     trainer.train()
+    print("Training finished.")
 
     print("Evaluating BERT...")
     results = trainer.evaluate()
@@ -114,6 +122,7 @@ def main():
 
     trainer.save_model(f"{model_output_path}/final")
     tokenizer.save_pretrained(f"{model_output_path}/final")
+
     print(f"Model saved to: {model_output_path}/final")
 
 

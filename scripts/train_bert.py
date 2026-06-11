@@ -11,7 +11,8 @@ from src.data.preprocess_data import preprocess_pipeline
 from src.data.split_data import split_data
 from src.features.bert_tokenizer import get_bert_tokenizer, create_bert_datasets
 from src.models.bert_model import get_bert_model
-
+from datasets import enable_progress_bar
+enable_progress_bar()
 
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
@@ -89,8 +90,8 @@ def main():
         save_total_limit=1,
         dataloader_pin_memory=True,
         disable_tqdm=False,
-        dataloader_num_workers=2,   # ✅ speeds up data loading on Colab
-        load_best_model_at_end=True, # ✅ keeps best checkpoint automatically
+        dataloader_num_workers=0,   
+        load_best_model_at_end=True, 
     )
 
     trainer = Trainer(
@@ -103,7 +104,7 @@ def main():
 
     print("Training BERT...")
     print("Training BERT...")
-    import sys; sys.stdout.flush()   # ✅ forces Colab to display the print immediately
+    import sys; sys.stdout.flush()   
     trainer.train()
     print("Training finished.")
 

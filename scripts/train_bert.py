@@ -58,6 +58,8 @@ def main():
 
     X_train, X_test, y_train, y_test = split_data(df)
 
+
+    print(f"Training samples: {len(X_train)}, Testing samples: {len(X_test)}")
     tokenizer = get_bert_tokenizer("bert-base-uncased")
 
     train_dataset, test_dataset = create_bert_datasets(
@@ -102,7 +104,6 @@ def main():
         compute_metrics=compute_metrics
     )
 
-    print("Training BERT...")
     print("Training BERT...")
     import sys; sys.stdout.flush()   
     trainer.train()

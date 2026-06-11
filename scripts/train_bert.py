@@ -101,6 +101,18 @@ def main():
         eval_dataset=test_dataset,
         compute_metrics=compute_metrics
     )
+    
+    print("Train dataset len:", len(train_dataset))
+    print("Batch size:", training_args.per_device_train_batch_size)
+    print("Num epochs:", training_args.num_train_epochs)
+    print("Max steps:", trainer.args.max_steps)
+
+    # Force-check the dataloader
+    from torch.utils.data import DataLoader
+    loader = DataLoader(train_dataset, batch_size=4)
+    batch = next(iter(loader))
+    print("Batch keys:", batch.keys())
+    print("input_ids shape:", batch["input_ids"].shape)
 
     print("Training BERT...")
     import sys; sys.stdout.flush()   

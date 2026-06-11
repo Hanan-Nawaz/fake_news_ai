@@ -58,8 +58,8 @@ def main():
 
     X_train, X_test, y_train, y_test = split_data(df)
 
-    tokenizer = get_bert_tokenizer("bert-base-uncased")
-
+    tokenizer = get_bert_tokenizer("distilbert-base-uncased")
+    
     train_dataset, test_dataset = create_bert_datasets(
         X_train=X_train,
         X_test=X_test,
@@ -70,25 +70,26 @@ def main():
     )
 
     model = get_bert_model(
-        model_name="bert-base-uncased",
+        model_name="distilbert-base-uncased",
         num_labels=3
     )
 
     training_args = TrainingArguments(
         output_dir=model_output_path,
-        eval_strategy="no",          
-        save_strategy="no",          
+        eval_strategy="epoch",
+        save_strategy="epoch",
         learning_rate=2e-5,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=32,
-        num_train_epochs=2,
+        num_train_epochs=1,
         weight_decay=0.01,
-        logging_steps=10,           
+        logging_steps=50,
         logging_strategy="steps",
         report_to="none",
-        fp16=torch.cuda.is_available(),
-        dataloader_num_workers=0,  
-        disable_tqdm=False,
+        fp16=True,
+        save_total_limit=1,
+        dataloader_pin_memory=True,
+        disable_tqdm=False
     )
 
     trainer = Trainer(

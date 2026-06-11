@@ -1,4 +1,4 @@
 from transformers import AutoTokenizer
 
-def get_distilbert_tokenizer():
-    return AutoTokenizer.from_pretrained("distilbert-base-uncased")
+def get_distilbert_tokenizer(model_name):
+    return AutoTokenizer.from_pretrained(model_name)

@@ -1,5 +1,10 @@
 # Avoid un-necessary files from being pushed
 __pycache__
+.DS_Store
 
 # Avoid data files from being pushed
 data/
+
+# Avoid notebooks from being pushed (ipynb)
+notebook/
+

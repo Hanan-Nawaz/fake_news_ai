@@ -1,1 +1,5 @@
+# Avoid un-necessary files from being pushed
 __pycache__
+
+# Avoid data files from being pushed
+data/
